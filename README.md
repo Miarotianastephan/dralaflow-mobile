@@ -48,3 +48,24 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+## Splash and Landing (this project)
+
+ - **Splash image used:** `assets/drf-splash-landing-page.png`
+ - To start the app in development (Metro + Expo Dev Tools):
+
+```bash
+npm install
+npx expo start
+```
+
+ - If you change the splash image and need to update the native assets, run (for bare or dev builds):
+
+```bash
+npx expo prebuild --clean
+npx expo run:android   # or `npx expo run:ios` on macOS
+```
+
+ - For managed Expo apps using EAS to produce builds, use `eas build` after updating `app.json`.
+
+These notes help you verify the splash and landing visuals on device or simulator.
