@@ -28,8 +28,6 @@ export default function Index() {
     <SafeAreaView style={styles.safeArea}>
       <ImageBackground
         // `resizeMode: cover` makes the image fill the screen
-        // while preserving aspect ratio. This produces a
-        // full-bleed splash/landing visual like the capture.
         style={styles.background}
         resizeMode="cover"
       >
@@ -59,10 +57,8 @@ export default function Index() {
             style={styles.button}
             activeOpacity={0.8}
             onPress={() => {
-              // Replace this with a real route once you add screens.
-              // For now we demonstrate navigation usage.
               console.log("Get Started pressed");
-              // Example navigation: router.push('/home')
+              router.push('/auth/login')
             }}
             accessibilityRole="button"
             accessibilityLabel="Get started"
