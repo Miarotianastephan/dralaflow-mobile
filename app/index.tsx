@@ -3,13 +3,13 @@ import React from "react";
 import {
   Image,
   ImageBackground,
-  SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import { colors } from "./constant/theme";
+import { colors } from "../constant/theme";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 // Landing screen that mirrors the provided PNG capture.
 // This file includes comments explaining the choices so you
@@ -58,7 +58,7 @@ export default function Index() {
             activeOpacity={0.8}
             onPress={() => {
               console.log("Get Started pressed");
-              router.push('/auth/login')
+              router.push('/auth/login');
             }}
             accessibilityRole="button"
             accessibilityLabel="Get started"
@@ -70,12 +70,13 @@ export default function Index() {
           <TouchableOpacity
             style={styles.buttonlearn}
             activeOpacity={0.8}
-            onPress={() => console.log("Learn more pressed")}
+            onPress={() => {
+              console.log("Learn more pressed")
+            }}
             accessibilityRole="button"
           >
             <Text style={styles.learnMore}>Learn more</Text>
           </TouchableOpacity>
-
           <Text style={styles.subtitle} numberOfLines={2}>
             Forgot password?
           </Text>
