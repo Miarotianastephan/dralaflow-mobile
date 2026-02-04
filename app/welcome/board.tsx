@@ -1,5 +1,6 @@
 import CustomButton from "@/components/custom-button";
 import Pagination from "@/components/pagination";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, View, ViewToken } from "react-native";
 import Animated, { useAnimatedRef, useAnimatedScrollHandler, useSharedValue } from "react-native-reanimated";
 import { FlatList } from "react-native-reanimated/lib/typescript/Animated";
@@ -10,6 +11,16 @@ export default function Board() {
     const flatlistRef = useAnimatedRef<FlatList<OnboardingData>>()
     const x = useSharedValue(0);
     const flatlistIndex = useSharedValue(0);
+
+    const [salary, setSalary] = useState<string>('');
+    const [monthLabel, setMonthLabel] = useState<string>('');
+
+    useEffect(() => {
+        const now = new Date();
+        const month = now.toLocaleString(undefined, { month: 'long' });
+        const year = now.getFullYear();
+        setMonthLabel(`${month} ${year}`);
+    }, [])
 
     const onViewableItemsChanged = ({viewableItems}: {viewableItems: ViewToken[]}) => {
         if(viewableItems[0] && viewableItems[0].index !== null){
@@ -29,7 +40,16 @@ export default function Board() {
                 onScroll={onScroll}
                 data={data} 
                 renderItem={({item, index}) => {
-                    return <RenderItem item={item} index={index} x={x}/>
+                    return (
+                        <RenderItem
+                            item={item}
+                            index={index}
+                            x={x}
+                            salary={salary}
+                            setSalary={setSalary}
+                            month={monthLabel}
+                        />
+                    )
                 }}
                 keyExtractor={item => item.id.toString()}
                 scrollEventThrottle={16} // control how often scrl event will fire 

@@ -67,7 +67,7 @@ const CustomButton = ({dataLength, flatlistIndex, flatlistRef, x}: Props) => {
                     animated: true
                 })
             }else{
-                // navigation.goBack();
+                navigation.replace('nav');
             }
         }}    
     >

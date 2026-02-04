@@ -1,16 +1,20 @@
 import LottieView from 'lottie-react-native'
 import React from 'react'
-import { StyleSheet, Text, useWindowDimensions, View } from 'react-native'
+import { KeyboardAvoidingView, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native'
 import Animated, { Extrapolation, interpolate, SharedValue, useAnimatedStyle } from 'react-native-reanimated'
+import { Input, Label, XStack } from 'tamagui'
 import { OnboardingData } from '../data/data'
 
 type Props = {
-    item: OnboardingData,
-    index: number,
-    x: SharedValue<number>
+  item: OnboardingData,
+  index: number,
+  x: SharedValue<number>,
+  salary?: string,
+  setSalary?: (v: string) => void,
+  month?: string
 }
 
-const RenderItem = ({index, item, x}: Props) => {
+const RenderItem = ({index, item, x, salary = '', setSalary, month = ''}: Props) => {
   const {width:SCREEN_WIDTH} = useWindowDimensions();
 
   const lottieAnimationStyle = useAnimatedStyle(() => {
@@ -46,8 +50,18 @@ const RenderItem = ({index, item, x}: Props) => {
   })
 
 
+  const salaryNumber = Number((salary || '').toString().replace(/[^0-9.-]+/g, '')) || 0;
+
+  const formattedCurrency = (value: number) => {
+    try{
+      return new Intl.NumberFormat(undefined, {style: 'currency', currency: 'MGA', maximumFractionDigits: 0}).format(value);
+    }catch(e){
+      return `${Math.round(value)} Ar`;
+    }
+  }
+
   return (
-    <View style={[styles.itemContainer, {width:SCREEN_WIDTH}]}>
+    <View style={[styles.itemContainer, {width:SCREEN_WIDTH}]}> 
       <View style={styles.circleContainer}>
         <Animated.View 
           style={[{
@@ -66,7 +80,54 @@ const RenderItem = ({index, item, x}: Props) => {
           loop
         />
       </Animated.View>
-      <Text style={[styles.itemText, {color: item.textColor}]}>{item.text}</Text>
+
+      {/* Screen specific content while preserving animation */}
+      {index === 0 && (
+        <Text style={[styles.itemText, {color: item.textColor}]}>Welcome{"\n"}to Fin App</Text>
+      )}
+
+      {index === 1 && (
+        <KeyboardAvoidingView behavior="padding" style={{width: '100%'}} enabled>
+          <ScrollView contentContainerStyle={{paddingHorizontal: 24}} showsVerticalScrollIndicator={false}>
+            <Text style={[styles.itemText, {fontSize: 32, color: item.textColor, marginBottom: 8}]}>Tell us your salary</Text>
+            <XStack alignItems="center" gap="$2" style={{ marginVertical: 12}}>
+              <Label width={90} htmlFor="salary" style={{ color: '#333', fontWeight: 'bold' }}>Salary</Label>
+              <Input id="salary" keyboardType="numeric" value={salary} onChangeText={setSalary} style={{ flex: 1 }} />
+            </XStack>
+            <XStack alignItems="center" gap="$2" style={{ marginVertical: 12 }}>
+              <Label width={90} htmlFor="month" style={{ color: '#333', fontWeight: 'bold' }}>Month</Label>
+              <Text style={{flex: 1, fontSize: 16, color: '#333'}}>{month}</Text>
+            </XStack>
+            {/* <View style={{height: 80}} /> */}
+          </ScrollView>
+        </KeyboardAvoidingView>
+      )}
+
+      {index === 2 && (
+        <View style={{width: '100%', paddingHorizontal: 24}}>
+          <Text style={[styles.itemText, {fontSize: 28, color: item.textColor, marginBottom: 8}]}>Budget Summary</Text>
+          <View style={{marginBottom: 12}}>
+            <Text style={{fontSize: 16, color: '#444'}}>Salary: {formattedCurrency(salaryNumber)}</Text>
+            <Text style={{fontSize: 16, color: '#444'}}>Month: {month}</Text>
+          </View>
+          <View style={{marginTop: 8}}>
+            <Text style={{fontSize: 18, fontWeight: '700'}}>Allocation</Text>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 8}}>
+              <Text>Needs (50%)</Text>
+              <Text>{formattedCurrency(salaryNumber * 0.5)}</Text>
+            </View>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 8}}>
+              <Text>Wants (30%)</Text>
+              <Text>{formattedCurrency(salaryNumber * 0.3)}</Text>
+            </View>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 8}}>
+              <Text>Savings (20%)</Text>
+              <Text>{formattedCurrency(salaryNumber * 0.2)}</Text>
+            </View>
+          </View>
+        </View>
+      )}
+
     </View>
   )
 }
